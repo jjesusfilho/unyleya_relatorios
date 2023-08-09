@@ -1,0 +1,53 @@
+---
+title: "Exemplo de documento em pdf"
+format: pdf
+execute: 
+  echo: true
+  message: false
+  warning: false
+editor: visual
+---
+
+## Introdução
+
+Para criar pdf com Quarto no Rstudio, primeiramente você tem de instalar o pacote tinytex e chamar a função `install_tinyext()`. Documentos em pdf são gerados por LaTex:
+
+```r
+install.packages("tinytex")
+library(tinytex)
+install_tinytex()
+```
+
+Para inserir um bloco de código, clique em ctrl+alt+i:
+
+```{r}
+### Aqui dentro, você insere o código que quiser.
+
+3*5
+```
+
+
+
+## Execução do código
+
+Ao clicar no botão **Render**, será gerado um documento que inclui o conteúdo e a saída do código incorporado. Você pode incorporar código como este:
+
+```{r}
+1 + 1
+```
+
+Você pode adicionar opções para executar o código.
+```{r}
+#| echo: false
+2 * 2
+```
+
+A opção `echo: false` desabilita a impressão do código.
+
+```{r}
+options(tidyverse.quiet = FALSE)
+#| message: true
+#| warning: true
+library(tidyverse)
+```
+
