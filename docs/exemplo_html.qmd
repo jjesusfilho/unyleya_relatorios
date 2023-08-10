@@ -1,0 +1,78 @@
+---
+title: "Básico de HTML no Quarto"
+author: "Fulano de Tal"
+date: "25 de julho de 2023"
+toc: true
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    code-tools: true
+    self-contained: true
+execute:
+  warning: false
+---
+
+## Introdução
+
+Este é um documento Quarto. Para aprender mais, clique em <https://quarto.org>.
+
+Acesse o botão **Code** para ver o código fonte deste docoumento.
+
+Veja abaixo o uso da função `summary()` . O resultado é incluído logo abaixo.
+
+```{r}
+summary(cars)
+```
+
+## Geração de gráficos
+
+Você pode incluir
+
+```{r}
+#| label: fig-pressao
+#| fig-cap: "Pressão"
+#| code-fold: true
+
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
+```
+
+Observe que o parâmetro `code-fold: true` parameter foi adicionado ao bloco de código para esconder o código por padrão. Aperte em "Code" acima para ver o código.
+
+As opções `label` e `fig-cap` criam uma figura com referência cruzada (see @fig-pressao).
+
+## Interactivity
+
+You can also add interactive plots. For example:
+
+```{r}
+#| label: fig-temperatures
+#| fig-cap: "New Haven Temperatures"
+
+library(dygraphs)
+dygraph(nhtemp) %>% 
+  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
+```
+
+## Tabelas
+
+A função `knitr::kable()` imprime tabelas em HTML:
+
+```{r}
+knitr::kable(head(ggplot2::diamonds))
+```
+
+## Matemática com Latex
+
+Se você tem familiaridade com fórmulas em Latex:
+
+$$
+P\left(A=2\middle|\frac{A^2}{B}>4\right)
+$$
