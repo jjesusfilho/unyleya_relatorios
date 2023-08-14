@@ -48,13 +48,13 @@ Observe que o parâmetro `code-fold: true` parameter foi adicionado ao bloco de 
 
 As opções `label` e `fig-cap` criam uma figura com referência cruzada (see @fig-pressao).
 
-## Interactivity
+## Interatividade
 
-You can also add interactive plots. For example:
+Você pode adicionar gráficos interativos:
 
 ```{r}
 #| label: fig-temperatures
-#| fig-cap: "New Haven Temperatures"
+#| fig-cap: "Temperaturas em New Haven"
 
 library(dygraphs)
 dygraph(nhtemp) %>% 

@@ -2,15 +2,51 @@
 title: "Exemplo de documento Word"
 format: docx
 editor: visual
+execute:
+  message: false
+  echo: false
+  warning: false
 ---
 
-## Quarto
+```{r}
+library(tidyverse)
+library(flextable)
+library(officedown)
+library(officer)
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+set_flextable_defaults(
+  font.family = "Times New Roman",
+  font.size = 9,
+  font.color = "black",
+  padding = 5,
+  table.layout = "autofit",
+  digits = 3,
+  big.mark = "",
+  decimal.mark = ",",
+  theme_fun = "theme_vanilla"
+  )
+FitFlextableToPage <- function(ft, pgwidth = 6){
 
-## Running Code
+  ft_out <- ft %>% 
+     autofit()
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+  ft_out <- width(ft_out, width = dim(ft_out)$widths*pgwidth /(flextable_dim(ft_out)$widths))
+  return(ft_out)
+}
+
+```
+
+### Crie uma table.a
+```{r}
+tabela <- tibble(x = 1:6,
+                 y = letters[1:6]) |> 
+  flextable() |> 
+  FitFlextableToPage()
+```
+
+
+## Documento em Word
+
 
 ```{r}
 1 + 1
