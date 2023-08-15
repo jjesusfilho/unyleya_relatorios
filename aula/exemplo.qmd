@@ -1,0 +1,54 @@
+---
+title: "Meu primeiro relatório em Quarto"
+subtitle: "Este é um subtítulo"
+author: "José de Jesus Filho"
+date: "05/06/2023"
+toc: true
+format: 
+    html: default
+    pdf: default
+    docx: default
+editor: visual
+execute: 
+  echo: false
+  warning: false
+  message: false
+bibliography: biblio.bib
+csl: abnt.csl
+---
+
+## Quarto
+
+Quarto enables you to **weave** together/ content and executable code into a finished document. To learn more about Quarto see [clique aqui](https://quarto.org)
+
+## Running Code
+
+| Col1 | Col2 | Col3 |
+|------|------|------|
+| jjd  | ddd  |      |
+|      |      |      |
+|      |      |      |
+
+When you click the **Render** *button* a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+hist(rnorm(1000))
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+
+Como diria Zabala [@zabala]
+
+
+Igualmente, Luvizotto entende que o conceito de jurimetria é polissêmico [@luvizotto]

@@ -48,18 +48,6 @@ Observe que o parâmetro `code-fold: true` parameter foi adicionado ao bloco de 
 
 As opções `label` e `fig-cap` criam uma figura com referência cruzada (see @fig-pressao).
 
-## Interatividade
-
-Você pode adicionar gráficos interativos:
-
-```{r}
-#| label: fig-temperatures
-#| fig-cap: "Temperaturas em New Haven"
-
-library(dygraphs)
-dygraph(nhtemp) %>% 
-  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
-```
 
 ## Tabelas
 
