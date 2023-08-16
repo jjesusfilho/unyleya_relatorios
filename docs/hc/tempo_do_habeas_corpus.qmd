@@ -2,10 +2,12 @@
 title: "Tempo do Habeas Corpus"
 author: "José de Jesus Filho"
 description: |
-     Nesta análise, mostramos como coletar e estimar o tempo para apreciação de
-     um habeas corpos no Tribunal de Justiça de São Paulo.
+     Nesta análise, mostramos como coletar e estimar o tempo para apreciação de um pedido de habeas corpos no Tribunal de Justiça de São Paulo.
 format: html
 editor: visual
+execute: 
+  message: false
+  warning: false
 ---
 
 ## Tempo do Habeas Corpus
@@ -14,13 +16,13 @@ Nesta análise, mostramos como coletar e estimar o tempo para apreciação de um
 
 Optamos por baixar pedidos de habeas corpus perante o Tribunal de Justiça de São Paulo contra atos de magistrados de primeira instância. Inicialmente, pensamos em analisar o tempo até a apreciação do pedido de liminar. No entanto, nem todos os HCs têm pedido de antecipação cautelar, muitas decisões concedem HC liminarmente independentemente de haver pedido de antecipação. Muitos HCs, mesmo com pedido de liminar, diferem o processamento até a apreciação de mérito. Dessa forma, optamos por observar o tempo entre a entrada no TJSP até a apreciação do mérito, independentemente se este foi decidido liminarmente ou não.
 
-Para esta análise, baixamos [3174 pedidos](colocar url) de HCs. 
+Para esta análise, baixamos [3174 pedidos](https://github.com/jjesusfilho/unyleya_relatorios/blob/main/docs/hc/base.rds) de HCs.
 
 Basicamente o que fizemos foi usar a função `cnj_sequencial` do pacote [JurisMiner](https://github.com/courtsbr/JurisMiner) para criar duas sequências de números do CNJ. Uma que começa com 20, outra que começa com 00. Fizemos isso porque notamos que havia dois padrões de numeração. O primeiro, que começa com 20, corresponde a habeas corpus impetrados eletronicamente, geralmente por advogados, especialmente a Defensoria Pública. O segundo, que começa com 00, corresponde a HCs impetrados pelos próprios pacientes ou seus familiares, geralmente presos com pedidos no âmbito da execução penal.
 
 ### Coleta dos dados
 
-Adicionei esta seção, somente para documentação do procedimento de coleta. Você pode saltá-la e ir diretamente para a análise. A base utilizada se encontra [aqui](colocar url). Veja abaixo como eu fiz. Primeiramente, criei um diretório chamado cpopsg (Consulta de julgados de segundo grau). Depois criei cada uma das sequências e coloquei para baixar os processos.
+Adicionei esta seção, somente para documentação do procedimento de coleta. Você pode saltá-la e ir diretamente para a análise. A base utilizada se encontra [aqui](colocar%20url). Veja abaixo como eu fiz. Primeiramente, criei um diretório chamado cpopsg (Consulta de julgados de segundo grau). Depois criei cada uma das sequências e coloquei para baixar os processos.
 
 Note que, antes de usar essas funções, você tem de instalar os pacotes [JurisMiner](https://github.com/courtsbr/JurisMiner) e [tjsp](https://github.com/jjesusfilho/tjsp):
 
@@ -37,26 +39,27 @@ library(JurisMiner)
 library(tjsp)
 ```
 
-``` r
+```r
 dir.create("cposg")
 
-sequencia <- cnj_sequencial(inicio = 2000001, ## início da sequência
-                                           fim = 2010000, ## fim da sequência
-                                           ano = 2022,  ## ano do processo
-                                           segmento = 8, ## Justiça estadual
-                                           tribunal = 26, ## TJSP
-                                           distribuidor = 0000 ## Segunda instância.
-                                           ) 
+seq1  <- cnj_sequencial(inicio = 2000001, ## início da sequência
+                            fim = 2010000, ## fim da sequência
+                            ano = 2023,  ## ano do processo
+                            segmento = 8, ## Justiça estadual
+                            uf = 26, ## TJSP
+                            distribuidor = 0000 ## Segunda instância.
+) 
 
-tjsp_baixar_cposg(sequencia, "cposg")
+seq2  <- cnj_sequencial(inicio = 1, ## início da sequência
+                        fim = 10000, ## fim da sequência
+                        ano = 2023,  ## ano do processo
+                        segmento = 8, ## Justiça estadual
+                        uf = 26, ## TJSP
+                        distribuidor = 0000 ## Segunda instância.
+) 
 
-sequencia <- cnj_sequencial(inicio = 0000001,
-                                           fim = 0010000,
-                                           ano = 2022, 
-                                           segmento = 8,
-                                           tribunal = 26,
-                                           distribuidor = 0000)
-                                           
+sequencia <- c(seq1, seq2)
+
 tjsp_baixar_cposg(sequencia, diretorio = "cposg")
 ```
 
@@ -72,22 +75,22 @@ Esses dados são todos os 20 mil primeiros processos instaurados na segunda inst
 
 ``` r
 dados <- dados |> 
-     filter(classe == "Habeas Corpus Criminal") ## Mantêm somente os habeas corpus.
+     filter(str_detect(classe, "(?i)habeas")) ## Mantêm somente os habeas corpus.
 ```
 
 Feito isso, vamos criar uma tabela com os arquivos e, a partir dela, criar uma coluna processo, extrair do nome do arquivo o número do processo para, então, filtrar somente aqueles que são HCs.
 
 ``` r
 tb <- tibble(arquivo = arquivos) |> ## Coloca o vetor de arquivos numa coluna de tibble
-      mutate(processo = str_extract(arquivo,"\\d{20}")) ## extrai os números dos processos.
+      mutate(cd_processo = str_extract(arquivo,"(?<=cd_processo_)\\w+")) ## extrai os números dos processos.
 
 tb <- tb |> 
-     semi_join(dados, by = "processo") ## Mantêm os arquivos cujos processos são HCs.
+     semi_join(dados, by = "cd_processo") ## Mantêm os arquivos cujos processos são HCs.
 ```
 
 Agora podemos ler somente as decisões e movimentações dos processos que são HC.
 
-``` r
+```r
 dispositivos <- tjsp_ler_dispositivo(tb$arquivo)
 
 movimentacao <- tjsp_ler_movimentacao(tb$arquivo)
@@ -101,7 +104,8 @@ dados |>
  glimpse()
 ```
 
-```r
+```{r}
+#| echo = FALSE
 readRDS("amostra_dados.rds") |> 
       tibble::glimpse()
 ```
@@ -122,12 +126,12 @@ dados <- dados |>
      mutate(crime = str_extract(assunto, "(?<=-)[^-]+$"), .after = assunto) ## extrai tudo que depois do último hífen.
      mutate(crime = str_squish(crime)) |> ## remove espaços extra.
      mutate(crime = ifelse(assunto == "DIREITO PENAL", "Execução penal", crime)) ## Se houver só a expressão DIREITO PENAL penal no assunto, converte o crime em Execução penal.
-      select(processo, orgao_julgador, crime) |> 
+      select(processo, cd_processo, orgao_julgador, crime) |> 
       mutate(camara = ordenar_camaras(orgao_julgador)) |> 
       mutate(fisico = ifelse(str_detect(processo, "^0"), "sim", "não"))
 ```
 
-A base dispositivos possui três colunas, processo, data e dispositivo. Além disso, nem todos os processos contêm a informação da decisão. Na verdade, ao examinar a base é possível saber que houve decisão e é até possível extraí-la da movimentação, mas vamos manter sem essa informação por razões pedagógicas a fim de ilustrar como dados censurados são incorporados na análise.
+A base dispositivos possui quatro colunas, processo, cd_processo, data e dispositivo. Além disso, nem todos os processos contêm a informação da decisão. Na verdade, ao examinar a base é possível saber que houve decisão e é até possível extraí-la da movimentação, mas vamos manter sem essa informação por razões pedagógicas a fim de ilustrar como dados censurados são incorporados na análise.
 
 No código abaixo, usamos a função `tjsp_classificar_writ` para extrair do dispositivo o teor da decisão. Não usaremos essa informação, mas manteremos na base por sua eventual utilidade. Igualmente, extraímos a informação de que a concessão foi em caráter liminar ou não.
 
@@ -156,8 +160,8 @@ Por fim, vamos juntar essas três bases e criar uma nova coluna chamada duraçã
 ``` r
 base <- dispositivos |> 
         select(processo, liminar, data_decisao = data, decisao) |> 
-        inner_join(dados, by = "processo") |> 
-        inner_join(dispositivos, by = "processo") |> 
+        inner_join(dados, by = "cd_processo") |> 
+        inner_join(mov, by = "cd_processo") |> 
         mutate(duracao = lapso(inicio = data_distribuicao, 
                                fim = data_decisao, 
                                unidade = "dia")
@@ -178,6 +182,11 @@ mutate(across(crime:decisao, as.factor))
 Estamos em condições de aplicar a análise de duração. Antes, porém, vamos visualizar os dados. São 3174 pedidos julgados. No entanto, há 587 casos censurados porque "não sabemos" quando foram decididos. Sabemos, porém que foram julgados porque todos foram extintos.
 
 ```{r}
+#| echo: false
+base <- readRDS("base.rds")
+```
+
+```{r}
 glimpse(base)
 ```
 
@@ -192,6 +201,7 @@ install.packages("survminer")
 Carregue os dois pacotes:
 
 ```{r}
+#| message: false
 library(survival)
 library(survminer)
 ```
@@ -201,7 +211,9 @@ Do pacote survival, usaremos duas funções, Surv e survfit. A primeira cria um 
 Inicialmente, vamos rodar o modelo sem as variáveis categóricas. Note que eu crio, com a função Surv o objeto. Nela eu coloquei o tempo (duração) e o status. Além disso, está subentendido o tipo de censura, que é à direita.
 
 ```{r}
-km_fit <- survfit(Surv(duracao, status) ~ 1, data = base)
+ob_duracao <- with(base, Surv(duracao, status))
+
+km_fit <- survfit(ob_duracao ~ 1, data = base)
 ```
 
 Os resultados mostram que de 3.174 pedidos, tivemos 2.604 decisões conhecidas. As demais foram censuradas. A mediana é de 40 dias. A mediana é mais apropriada que a média em análise de duração porque a distribuição das decisões é mais concentrada nos primeiros momentos, com poucos casos, mas importantes, com alta duração.
@@ -321,4 +333,4 @@ Quando olhamos para algumas câmaras, como a 13ª e a 15ª, os processos eletrô
 
 Esse tutorial quis ilustrar o potencial da análise de duração para a jurimetria. Nem sequer exploramos o tema profundamente. Há muito mais questões que podem ser exploradas, como saber se decisões quem tendem a negar o HC saem mais rapidamente ou não. Igualmente, decisões liminares estão sujeitas ao fumus boni iuris e ao periculum in mora. Possivelmente, os tempos se invertem quando deferir uma liminar supostamente gera um perigo (HC) ou quando a o indeferimento gera perigo (medidas protetivas.)
 
-A base está [disponível](colocar url) para você analisá-la e explorar esses outros aspectos.
+A base está [disponível](colocar%20url) para você analisá-la e explorar esses outros aspectos.
