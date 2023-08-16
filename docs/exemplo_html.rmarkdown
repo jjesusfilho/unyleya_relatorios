@@ -13,6 +13,7 @@ execute:
   warning: false
 ---
 
+
 ## Introdução
 
 Este é um documento Quarto. Para aprender mais, clique em <https://quarto.org>.
@@ -21,13 +22,16 @@ Acesse o botão **Code** para ver o código fonte deste docoumento.
 
 Veja abaixo o uso da função `summary()` . O resultado é incluído logo abaixo.
 
+
 ```{r}
 summary(cars)
 ```
 
+
 ## Geração de gráficos
 
 Você pode incluir
+
 
 ```{r}
 #| label: fig-pressao
@@ -44,6 +48,7 @@ ggplot(dat, aes(x=xvar, y=yvar)) +
     geom_smooth() 
 ```
 
+
 Observe que o parâmetro `code-fold: true` parameter foi adicionado ao bloco de código para esconder o código por padrão. Aperte em "Code" acima para ver o código.
 
 As opções `label` e `fig-cap` criam uma figura com referência cruzada (see @fig-pressao).
@@ -53,9 +58,11 @@ As opções `label` e `fig-cap` criam uma figura com referência cruzada (see @f
 
 A função `knitr::kable()` imprime tabelas em HTML:
 
+
 ```{r}
 knitr::kable(head(ggplot2::diamonds))
 ```
+
 
 ## Matemática com Latex
 
@@ -68,3 +75,4 @@ Se você tem familiaridade com fórmulas em Latex:
 $$
 P\left(A=2\middle|\frac{A^2}{B}>4\right)
 $$
+

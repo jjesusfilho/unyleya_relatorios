@@ -47,8 +47,24 @@ You can add options to executable code like this
 
 The `echo: false` option disables the printing of code (only output is displayed).
 
-
 Como diria Zabala [@zabala]
 
-
 Igualmente, Luvizotto entende que o conceito de jurimetria é polissêmico [@luvizotto]
+
+
+
+::: {.panel-tabset}
+
+## Aba A
+
+Seu texto  
+Seu código
+
+## Aba B
+
+Seu texto  
+seu código
+:::
+
+
+

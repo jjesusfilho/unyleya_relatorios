@@ -22,3 +22,17 @@ When you click the **Render** button a presentation will be generated that inclu
 ```{r}
 1 + 1
 ```
+
+
+## Gráfico ggplot no ppt
+
+```{r}
+library(ggplot2)
+
+df <- data.frame(x = rep(c(2.9, 3.1, 4.5), c(5, 10, 4)))
+ggplot(df, aes(x, fill = after_stat(count))) + 
+  geom_bar() +
+  scale_fill_viridis_c(guide = "none") + 
+  theme_minimal()
+```
+

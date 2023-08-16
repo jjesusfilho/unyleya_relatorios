@@ -1,7 +1,7 @@
 ---
 title: "Comunicando seus resultados: Criando apresentações com **Quarto**"
 author: "José de Jesus Filho"
-date: '`r format(Sys.Date(), "%d/%m/%Y")`'
+date: '`r format(lubridate::dmy("05/06/2023"), "Brasília, %d de %b de %Y")`'
 format: 
   revealjs:
     logo: "imagens/logo.png"
@@ -9,7 +9,7 @@ format:
     height: 900
     self-contained: false
     incremental: false
-    footer: "Apresentação de [José de Jesus Filho(https://direitoemdados.consudata.com.br) (@jjesusfilho), criado com [Quarto](https://quarto.org/docs/presentations/revealjs/index.html). Código disponível [em GitHub](https://github.com/jjesusfilho/unyleya_relatorios)."
+    footer: "Apresentação de [José de Jesus Filho [acesse o blog](https://direitoemdados.consudata.com.br) (@jjesusfilho), criado com [Quarto](https://quarto.org/docs/presentations/revealjs/index.html). Código disponível [em GitHub](https://github.com/jjesusfilho/unyleya_relatorios)."
     theme: ["custom.scss"]
     slide-number: c/t
     show-slide-number: all
@@ -44,9 +44,9 @@ Dica: Você pode criar uma conta vinculada ao Gmail ou GitHub.
 
 A Jurimetria é conformada por três componentes
 
-- Direito
-- Programação 
-- Aprendizado estatístico
+-   Direito
+-   Programação
+-   Aprendizado estatístico
 
 ## Notas periféricas
 
@@ -58,9 +58,11 @@ Comentários adicionais e periféricos
 
 ## Notas periféricas com nota de rodapé
 
-- Verde ^[Nota de rodapé]
-- Marrom
-- Violeta
+-   Verde [^1]
+-   Marrom
+-   Violeta
+
+[^1]: Nota de rodapé
 
 ::: aside
 Comentários e notas de interesse
@@ -70,16 +72,17 @@ Comentários e notas de interesse
 
 Conteúdo
 
-::: {.notes}
+::: notes
 Suas notas vão aqui
 :::
 
 # Blocos de código
 
 ## Destaque de linhas
-Você pode  destacar linhas específicas de saída de código (ou mesmo destacar linhas distintas em uma progressão de etapas). Você pode fazer isso usando o atributo code-line-numbers dos chunks. Por exemplo:
 
-```{.r code-line-numbers="3-4"}
+Você pode destacar linhas específicas de saída de código (ou mesmo destacar linhas distintas em uma progressão de etapas). Você pode fazer isso usando o atributo code-line-numbers dos chunks. Por exemplo:
+
+``` {.r code-line-numbers="5"}
 
 library(ggplot2)
 
@@ -92,7 +95,7 @@ ggplot(df, aes(x, fill = after_stat(count))) +
 
 ## Mostrando o resultado
 
-Você deve ter notado que só o código apareceu. Se quiser ver o gráfico:
+Você deve ter notado, no slide anterior, que só o código apareceu. Se quiser ver o gráfico:
 
 ```{r}
 library(ggplot2)
@@ -105,7 +108,6 @@ ggplot(df, aes(x, fill = after_stat(count))) +
 ```
 
 ## Que tal os dois?
-
 
 ```{r}
 #| echo: true
@@ -134,19 +136,16 @@ ggplot(df, aes(x, fill = after_stat(count))) +
 
 ## Adicione abas à sua apresentação
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Aba A
 
 Conteúdo para `Aba A`
 
 ### Aba B
 
-Conteúdo para  `Aba B`
-
+Conteúdo para `Aba B`
 :::
 
-
-## Imagem de fundo {background-color="black" background-image="https://ogimg.infoglobo.com.br/in/25007831-e7b-b40/FT1086A/stf.png" background-size="100px" background-repeat="repeat"}
+## Imagem de fundo {background-color="white" background-image="https://ogimg.infoglobo.com.br/in/25007831-e7b-b40/FT1086A/stf.png" background-size="30px" background-repeat="repeat"}
 
 A imagem do STF será repetida várias vezes em 100px..

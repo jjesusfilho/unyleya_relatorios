@@ -27,7 +27,7 @@ set_flextable_defaults(
   )
 FitFlextableToPage <- function(ft, pgwidth = 6){
 
-  ft_out <- ft %>% 
+  ft_out <- ft |> 
      autofit()
 
   ft_out <- width(ft_out, width = dim(ft_out)$widths*pgwidth /(flextable_dim(ft_out)$widths))
@@ -36,27 +36,12 @@ FitFlextableToPage <- function(ft, pgwidth = 6){
 
 ```
 
-### Crie uma table.a
+### Crie uma tabela
+
 ```{r}
 tabela <- tibble(x = 1:6,
                  y = letters[1:6]) |> 
   flextable() |> 
   FitFlextableToPage()
+tabela
 ```
-
-
-## Documento em Word
-
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
